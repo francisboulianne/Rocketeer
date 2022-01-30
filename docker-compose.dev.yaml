@@ -29,7 +29,7 @@ services:
 
   mongo:
     image: mongo:latest
-    container_name: Rocketeer
+    container_name: rocketeer
     environment:
       MONGO_INITDB_DATABASE: rocketeer
       MONGODB_DATA_DIR: /data/db
