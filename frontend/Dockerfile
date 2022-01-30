@@ -40,5 +40,4 @@ WORKDIR /app
 COPY --from=build-target /app/node_modules node_modules
 COPY --from=build-target /app/.next .next
 
-CMD ["next", "build"]
 CMD ["next", "start"]
