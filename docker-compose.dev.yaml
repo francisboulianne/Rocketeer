@@ -1,0 +1,39 @@
+services:
+  backend:
+    container_name: rocketeer-wep-app-backend
+    restart: unless-stopped
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    environment:
+      ENVIRONMENT: docker
+    volumes:
+      - ./backend:/app
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongo
+
+  frontend:
+    container_name: rocketeer-frontend
+    restart: unless-stopped
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      NEXT_PUBLIC_ENVIRONMENT: docker
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+
+  mongo:
+    image: mongo:latest
+    container_name: Rocketeer
+    environment:
+      MONGO_INITDB_DATABASE: rocketeer
+      MONGODB_DATA_DIR: /data/db
+    volumes:
+      - ./data/mongo/db:/data/db
+    ports:
+      - "27017:27017"

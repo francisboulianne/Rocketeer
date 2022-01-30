@@ -1,0 +1,36 @@
+services:
+  backend:
+    container_name: rocketeer-backend
+    restart: unless-stopped
+    build: ./backend
+    environment:
+      ENVIRONMENT: docker
+    volumes:
+      - ./backend/src:/app/src
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongo
+
+  frontend:
+    container_name: rocketeer-frontend
+    restart: unless-stopped
+    build: ./frontend
+    environment:
+      NEXT_PUBLIC_ENVIRONMENT: docker
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src:/app/src
+      - /app/node_modules
+
+  mongo:
+    image: mongo:latest
+    container_name: Rocketeer
+    environment:
+      MONGO_INITDB_DATABASE: rocketeer
+      MONGODB_DATA_DIR: /data/db
+    volumes:
+      - ./data/mongo/db:/data/db
+    ports:
+      - "27017:27017"
