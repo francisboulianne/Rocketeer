@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { Form, Formik, FormikErrors, FormikHelpers, FormikTouched, useFormik, useFormikContext } from "formik";
+import { Form, Formik, useFormikContext } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import * as Yup from "yup";
@@ -13,8 +13,8 @@ interface InternalSignUpFormProps {
   error: AxiosError | undefined;
 }
 
-const InternalSignUpForm = ({ state, error }: InternalSignUpFormProps) => {
-  const { errors: formErrors, touched, status, setErrors, setTouched, initialValues } = useFormikContext<User>();
+const InternalSignUpForm = ({ state }: InternalSignUpFormProps) => {
+  const { errors: formErrors, touched, status, initialValues } = useFormikContext<User>();
 
   const router = useRouter();
 
@@ -63,7 +63,7 @@ const InternalSignUpForm = ({ state, error }: InternalSignUpFormProps) => {
 };
 
 export const SignUpForm = () => {
-  const { state, signUpUser, error, data } = useSignUp();
+  const { state, signUpUser, error } = useSignUp();
 
   const initialValues: User = {
     username: "",
