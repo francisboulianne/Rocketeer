@@ -13,7 +13,6 @@ export interface Config {
 export const getConfigForEnvironment = () => {
   const { publicRuntimeConfig } = getConfig();
   const environment = publicRuntimeConfig?.environment || "local";
-  return productionConfig;
 
   switch (environment) {
     case "local":
