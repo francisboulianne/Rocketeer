@@ -5,7 +5,7 @@ export const productionConfig: Config = {
     port: 8080
   },
   mongo: {
-    connectionString: `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@rocketeer.gerps.mongodb.net`,
-    databaseName: "onlytanks"
+    connectionString: "francis:Moustache123@rocketeer.ri5qr.mongodb.net",
+    databaseName: "Rocketeer"
   }
 };

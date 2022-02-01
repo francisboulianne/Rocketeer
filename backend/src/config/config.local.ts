@@ -5,7 +5,7 @@ export const localConfig: Config = {
     port: 8888
   },
   mongo: {
-    connectionString: "mongodb://localhost:27017",
+    connectionString: "francis:Moustache123@rocketeer.ri5qr.mongodb.net",
     databaseName: "Rocketeer"
   }
 };
