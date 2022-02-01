@@ -9,7 +9,9 @@ import { getConfigForEnvironment } from "./config";
 
 const config = getConfigForEnvironment();
 
-mongoose.connect(`mongodb+srv://${config.mongo.connectionString}/${config.mongo.databaseName}?retryWrites=true&w=majority`);
+mongoose.connect(`mongodb+srv://${config.mongo.connectionString}/${config.mongo.databaseName}?retryWrites=true&w=majority`, {
+  useNewUrlParser: true
+});
 
 app.use(express.json());
 app.use(cors());
