@@ -13,22 +13,32 @@ interface InternalSignUpFormProps {
   error: AxiosError | undefined;
 }
 
-const InternalSignUpForm = ({ state }: InternalSignUpFormProps) => {
-  const { errors: formErrors, touched, status, initialValues } = useFormikContext<User>();
+const InternalSignUpForm = ({ state, error }: InternalSignUpFormProps) => {
+  const { errors: formErrors, touched, setErrors: setFormErrors, initialValues } = useFormikContext<User>();
 
   const router = useRouter();
 
   useEffect(() => {
     switch (state) {
-      case "success":
+      case State.SUCCESS:
         // TODO set session cookies
         router.push("/");
         break;
 
-      case "error":
+      case State.ERROR:
+        setErrors(error?.response?.data.errors);
         break;
     }
   }, [router, state]);
+
+  const setErrors = (errors: any) => {
+    const newErrors: any = {};
+    errors?.map((error: any) => {
+      newErrors[error.param] = error.msg;
+    });
+
+    setFormErrors(newErrors);
+  };
 
   const isFormInvalid = () => {
     return Object.keys(formErrors).length > 0 || Object.keys(touched).length < Object.keys(initialValues).length;
@@ -44,19 +54,17 @@ const InternalSignUpForm = ({ state }: InternalSignUpFormProps) => {
 
       <FormikField name="email" placeholder="Email" isError={!!(formErrors.email && touched.email)} />
 
-      <FormikField
-        name="phoneNumber"
-        placeholder="Phone number"
-        isError={!!(formErrors.phoneNumber && touched.phoneNumber) || status.phoneNumber}
-      />
+      <FormikField name="phoneNumber" placeholder="Phone number" isError={!!(formErrors.phoneNumber && touched.phoneNumber)} />
+
+      <FormikField name="password" placeholder="Password" isError={!!(formErrors.password && touched.password)} type="password" />
 
       <button
         className={"text-white rounded py-2 mt-2 w-full " + (isFormInvalid() ? "bg-blue-200" : "bg-blue-400")}
         type="submit"
         disabled={isFormInvalid()}
       >
-        <span className={state === "loading" ? "ml-4" : ""}>Submit</span>
-        <span className="relative float-right mt-1 mr-4">{state === "loading" && <SpinnerIcon size={20} />}</span>
+        <span className={state === State.LOADING ? "ml-4" : ""}>Submit</span>
+        <span className="relative float-right mt-1 mr-4">{state === State.LOADING && <SpinnerIcon size={20} />}</span>
       </button>
     </Form>
   );
@@ -70,7 +78,8 @@ export const SignUpForm = () => {
     firstName: "",
     lastName: "",
     email: "",
-    phoneNumber: ""
+    phoneNumber: "",
+    password: ""
   };
 
   const validationSchema = Yup.object().shape({
@@ -78,7 +87,8 @@ export const SignUpForm = () => {
     firstName: Yup.string().required(" "),
     lastName: Yup.string().required(" "),
     email: Yup.string().required(" "),
-    phoneNumber: Yup.string().required(" ")
+    phoneNumber: Yup.string().required(" "),
+    password: Yup.string().required(" ")
   });
 
   const onSubmit = (values: User) => {

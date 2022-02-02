@@ -8,7 +8,8 @@ export default class UserAssembler {
       username: user.username,
       firstName: user.firstName,
       lastName: user.lastName,
-      phoneNumber: user.phoneNumber
+      phoneNumber: user.phoneNumber,
+      password: user.password
     });
   }
 
@@ -18,7 +19,8 @@ export default class UserAssembler {
       firstName: userDto.firstName,
       lastName: userDto.lastName,
       email: userDto.email,
-      phoneNumber: userDto.phoneNumber
+      phoneNumber: userDto.phoneNumber,
+      password: userDto.password
     };
   }
 }

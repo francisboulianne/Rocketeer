@@ -1,34 +1,95 @@
-import React, { useState } from "react";
+import { AxiosError } from "axios";
+import { Form, Formik, useFormikContext } from "formik";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
+import * as Yup from "yup";
+import { State } from "../../hooks/useAxios";
+import { Credentials, useLogin } from "../../hooks/useLogin";
+import { SpinnerIcon } from "../icons/SpinnerIcon";
+import { FormikField } from "../shared/FormikField";
 
-export const LoginForm = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+interface InternalLoginFormProps {
+  state: State;
+  error: AxiosError | undefined;
+}
 
-  const isFormValid = () => {
-    return !!username && !!password;
+const InternalLoginForm = ({ state, error }: InternalLoginFormProps) => {
+  const { errors: formErrors, touched, setErrors: setFormErrors, initialValues } = useFormikContext<Credentials>();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    switch (state) {
+      case State.SUCCESS:
+        // TODO set session cookies
+        router.push("/");
+        break;
+
+      case State.ERROR:
+        setErrors(error?.response?.data.errors);
+        break;
+    }
+  }, [router, state]);
+
+  const setErrors = (errors: any) => {
+    const newErrors: any = {};
+    errors?.map((error: any) => {
+      newErrors[error.param] = error.msg;
+    });
+
+    setFormErrors(newErrors);
+  };
+
+  const isFormInvalid = () => {
+    return Object.keys(formErrors).length > 0 || Object.keys(touched).length < Object.keys(initialValues).length;
   };
 
   return (
-    <>
-      <input
-        className="bg-slate-100 rounded px-2 py-2 border-[1px] w-full "
-        placeholder="Username"
-        value={username}
-        onChange={({ target }) => setUsername(target.value)}
-      />
-      <input
-        className="bg-gray-50 rounded px-2 py-2 border-[1px] w-full "
-        placeholder="Password"
-        value={password}
-        onChange={({ target }) => setPassword(target.value)}
-      />
+    <Form className="text-center align-middle justify-center">
+      <FormikField name="username" placeholder="Username" isError={!!(formErrors.username && touched.username)} />
+
+      <FormikField name="password" placeholder="Password" isError={!!(formErrors.password && touched.password)} type="password" />
 
       <button
-        className={"text-white font-serif rounded py-2 mt-2 w-full " + (isFormValid() ? "bg-sky-300" : "bg-sky-200")}
-        disabled={!isFormValid()}
+        className={"text-white rounded py-2 mt-2 w-full " + (isFormInvalid() ? "bg-blue-200" : "bg-blue-400")}
+        type="submit"
+        disabled={isFormInvalid()}
       >
-        Log In
+        <span className={state === State.LOADING ? "ml-4" : ""}>Submit</span>
+        <span className="relative float-right mt-1 mr-4">{state === State.LOADING && <SpinnerIcon size={20} />}</span>
       </button>
-    </>
+    </Form>
+  );
+};
+
+export const LoginForm = () => {
+  const { state, loginUser, error } = useLogin();
+
+  const initialValues: Credentials = {
+    username: "",
+    password: ""
+  };
+
+  const validationSchema = Yup.object().shape({
+    username: Yup.string().required(" "),
+    password: Yup.string().required(" ")
+  });
+
+  const onSubmit = (values: Credentials) => {
+    loginUser(values);
+  };
+
+  return (
+    <div>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        validateOnBlur={false}
+        initialStatus={{}}
+      >
+        <InternalLoginForm state={state} error={error} />
+      </Formik>
+    </div>
   );
 };

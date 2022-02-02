@@ -5,9 +5,10 @@ interface Props {
   name: string;
   placeholder: string;
   isError?: boolean;
+  type?: string;
 }
 
-export const FormikField = ({ name, placeholder, isError }: Props) => {
+export const FormikField = ({ name, placeholder, isError, type }: Props) => {
   return (
     <>
       <Field
@@ -15,6 +16,7 @@ export const FormikField = ({ name, placeholder, isError }: Props) => {
         id={name}
         name={name}
         placeholder={placeholder}
+        type={type}
       />
       <ErrorMessage name={name}>{(msg) => <div className="text-red-700 text-xs">{msg}</div>}</ErrorMessage>
     </>

@@ -8,7 +8,8 @@ export default class UserAssembler {
       firstName: signUpRequest.firstName,
       lastName: signUpRequest.lastName,
       email: signUpRequest.email,
-      phoneNumber: signUpRequest.phoneNumber
+      phoneNumber: signUpRequest.phoneNumber,
+      password: signUpRequest.password
     };
   }
 }

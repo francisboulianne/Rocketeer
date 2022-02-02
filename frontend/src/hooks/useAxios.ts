@@ -6,22 +6,27 @@ const config = getConfigForEnvironment();
 
 axios.defaults.baseURL = config.server.address + (config.server.port ? `:${config.server.port}` : "");
 
-export type State = "idle" | "loading" | "success" | "error";
+export enum State {
+  IDLE,
+  LOADING,
+  SUCCESS,
+  ERROR
+}
 
 export const useAxios = () => {
   const [data, setData] = useState<AxiosResponse>();
   const [error, setError] = useState<AxiosError>();
-  const [state, setState] = useState<State>("idle");
+  const [state, setState] = useState<State>(State.IDLE);
 
   const sendRequest = async (params: AxiosRequestConfig) => {
-    setState("loading");
+    setState(State.LOADING);
     try {
       const result = await axios.request(params);
       setData(result);
-      setState("success");
+      setState(State.SUCCESS);
     } catch (err: any) {
       setError(err);
-      setState("error");
+      setState(State.ERROR);
     }
   };
 

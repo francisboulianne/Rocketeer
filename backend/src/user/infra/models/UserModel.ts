@@ -17,6 +17,9 @@ export class UserDto {
   @prop({ type: String, required: true })
   public phoneNumber: string;
 
+  @prop({ type: String, required: true })
+  public password: string;
+
   public createdAt?: Date;
 
   public updatedAt?: Date;
