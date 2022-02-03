@@ -5,6 +5,6 @@ export default class UserService {
   constructor(private userRepository: UserRepository) {}
 
   public async findByUsername(username: string): Promise<User> {
-    return this.userRepository.findByUsername(username);
+    return await this.userRepository.findByUsername(username);
   }
 }

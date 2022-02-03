@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { Form, Formik, useFormikContext } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -9,20 +9,37 @@ import { SpinnerIcon } from "../icons/SpinnerIcon";
 import { FormikField } from "../shared/FormikField";
 
 interface InternalLoginFormProps {
+  response: AxiosResponse | undefined;
   state: State;
   error: AxiosError | undefined;
 }
 
-const InternalLoginForm = ({ state, error }: InternalLoginFormProps) => {
-  const { errors: formErrors, touched, setErrors: setFormErrors, initialValues } = useFormikContext<Credentials>();
+const InternalLoginForm = ({ response, state, error }: InternalLoginFormProps) => {
+  const { errors: formErrors, touched, setErrors: setFormErrors, setTouched, setValues, initialValues } = useFormikContext<Credentials>();
 
   const router = useRouter();
+
+  useEffect(() => {
+    const savedUsername = localStorage.getItem("username");
+    const savedPassword = localStorage.getItem("password");
+    if (savedUsername && savedPassword) {
+      setValues({
+        username: localStorage.getItem("username") ?? "",
+        password: localStorage.getItem("password") ?? ""
+      });
+      setTouched({
+        username: true,
+        password: true
+      });
+    }
+  }, [setValues, setTouched]);
 
   useEffect(() => {
     switch (state) {
       case State.SUCCESS:
         // TODO set session cookies
-        localStorage.setItem("user");
+        localStorage.setItem("username", response?.data?.username);
+        localStorage.setItem("password", response?.data?.password);
         router.push("/profile");
         break;
 
@@ -30,7 +47,7 @@ const InternalLoginForm = ({ state, error }: InternalLoginFormProps) => {
         setErrors(error?.response?.data.errors);
         break;
     }
-  }, [router, state]);
+  }, [router, response, state]);
 
   const setErrors = (errors: any) => {
     const newErrors: any = {};
@@ -64,7 +81,7 @@ const InternalLoginForm = ({ state, error }: InternalLoginFormProps) => {
 };
 
 export const LoginForm = () => {
-  const { state, loginUser, error } = useLogin();
+  const { data, state, loginUser, error } = useLogin();
 
   const initialValues: Credentials = {
     username: "",
@@ -89,7 +106,7 @@ export const LoginForm = () => {
         validateOnBlur={false}
         initialStatus={{}}
       >
-        <InternalLoginForm state={state} error={error} />
+        <InternalLoginForm response={data} state={state} error={error} />
       </Formik>
     </div>
   );
