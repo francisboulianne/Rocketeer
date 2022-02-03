@@ -1,15 +1,12 @@
 import Link from "next/link";
-import { useCookies } from "react-cookie";
 import { FormHeader } from "../shared/FormHeader";
 import { FormLayout } from "../shared/FormLayout";
 import { MenuItem } from "../shared/MenuItem";
 import { ProfileInformation } from "./ProfileInformation";
 
 export const ProfilePage = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(["credentials"]);
-
   const logOut = () => {
-    removeCookie("credentials");
+    localStorage.removeItem("user");
   };
 
   return (
