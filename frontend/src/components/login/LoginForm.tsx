@@ -2,6 +2,7 @@ import { AxiosError, AxiosResponse } from "axios";
 import { Form, Formik, useFormikContext } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
+import { useCookies } from "react-cookie";
 import * as Yup from "yup";
 import { State } from "../../hooks/useAxios";
 import { Credentials, useLogin } from "../../hooks/useLogin";
@@ -16,28 +17,29 @@ interface InternalLoginFormProps {
 
 const InternalLoginForm = ({ response, state, error }: InternalLoginFormProps) => {
   const { errors: formErrors, touched, setErrors: setFormErrors, setTouched, setValues, initialValues } = useFormikContext<Credentials>();
+  const [cookies, setCookie] = useCookies(["credentials"]);
 
   const router = useRouter();
 
   useEffect(() => {
-    const savedUsername = localStorage.getItem("username");
-    const savedPassword = localStorage.getItem("password");
-    if (savedUsername && savedPassword) {
+    const savedCredentials = cookies.credentials;
+    if (savedCredentials) {
       setValues({
-        username: localStorage.getItem("username") ?? "",
-        password: localStorage.getItem("password") ?? ""
+        username: savedCredentials.username,
+        password: savedCredentials.password
       });
       setTouched({
         username: true,
         password: true
       });
     }
-  }, [setValues, setTouched]);
+  }, [cookies, setValues, setTouched]);
 
   useEffect(() => {
     switch (state) {
       case State.SUCCESS:
         // TODO set session cookies
+        setCookie("credentials", JSON.stringify({ username: response?.data.username, password: response?.data.password }));
         localStorage.setItem("user", JSON.stringify(response?.data));
         router.push("/profile");
         break;
