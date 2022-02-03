@@ -1,14 +1,26 @@
 import User from "../domain/User";
-import UserManipulator from "../domain/UserManipulator";
-import UserAssembler from "./UserAssembler";
+import UserNotFoundException from "../domain/UserNotFoundException";
+import UserRepository from "../domain/UserRepository";
+import UserModel, { MongoUser } from "./models/MongoUserModel";
+import MongoUserMapper from "./MongoUserMapper";
 
-export default class MongoDbUserRepository implements UserManipulator {
-  constructor(private userAssembler: UserAssembler) {
-    this.userAssembler = userAssembler;
+export default class MongoUserRepository implements UserRepository {
+  constructor(private mongoUserMapper: MongoUserMapper) {
+    this.mongoUserMapper = mongoUserMapper;
   }
 
-  public async create(user: User): Promise<User> {
-    const userModel = this.userAssembler.toExternal(user);
-    return this.userAssembler.toDomain(await userModel.save());
+  public async save(user: User): Promise<User> {
+    const mongoUser = this.mongoUserMapper.toMongoUser(user);
+    return this.mongoUserMapper.toUser(await mongoUser.save());
+  }
+
+  public async findByUsername(username: string): Promise<User> {
+    const userDto = (await UserModel.findOne({ username })) as unknown as MongoUser;
+
+    if (!userDto) {
+      throw new UserNotFoundException();
+    }
+
+    return this.mongoUserMapper.toUser(userDto);
   }
 }

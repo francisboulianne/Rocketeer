@@ -1,8 +1,8 @@
 import { CustomValidator } from "express-validator";
-import UserModel from "../../infra/models/UserModel";
+import MongoUserModel from "../../../user/infra/models/MongoUserModel";
 
 export const isUsedUsername: CustomValidator = async (value: string): Promise<string | void> => {
-  const userWithEmail = await UserModel.findOne({ username: value });
+  const userWithEmail = await MongoUserModel.findOne({ username: value });
   if (!userWithEmail) {
     return Promise.reject("Username does not exist");
   }

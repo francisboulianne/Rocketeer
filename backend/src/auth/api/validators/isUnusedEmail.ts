@@ -1,8 +1,8 @@
 import { CustomValidator } from "express-validator";
-import UserModel from "../../infra/models/UserModel";
+import MongoUserModel from "../../../user/infra/models/MongoUserModel";
 
 export const isUnusedEmail: CustomValidator = async (value: string): Promise<string | void> => {
-  const usersWithEmail = await UserModel.find({ email: value });
+  const usersWithEmail = await MongoUserModel.find({ email: value });
   if (usersWithEmail.length > 1) {
     return Promise.reject("Email is already in use");
   }

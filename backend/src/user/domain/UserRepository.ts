@@ -1,7 +1,8 @@
 import User from "./User";
 
 interface UserRepository {
-  create(user: User): Promise<User>;
+  save(user: User): Promise<User>;
+  findByUsername(username: string): Promise<User>;
 }
 
 export default UserRepository;

@@ -1,7 +1,7 @@
 import { prop, getModelForClass, modelOptions } from "@typegoose/typegoose";
 
 @modelOptions({ schemaOptions: { collection: "users", timestamps: true } })
-export class UserDto {
+export class MongoUser {
   @prop({ type: String, required: true })
   public username: string;
 
@@ -25,6 +25,6 @@ export class UserDto {
   public updatedAt?: Date;
 }
 
-const UserModel = getModelForClass(UserDto);
+const MongoUserModel = getModelForClass(MongoUser);
 
-export default UserModel;
+export default MongoUserModel;

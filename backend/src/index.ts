@@ -2,8 +2,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
-const helloWorldRouter = require("./hello-world/api/helloWorld");
-const userRouter = require("./user/api/UserResource");
+const userRessource = require("./user/api/UserResource");
+const authRessource = require("./auth/api/AuthRessource");
 
 import { getConfigForEnvironment } from "./config";
 
@@ -16,8 +16,8 @@ mongoose.connect(`mongodb+srv://${config.mongo.connectionString}/${config.mongo.
 app.use(express.json());
 app.use(cors());
 
-app.use("/hello-world", helloWorldRouter);
-app.use("/", userRouter);
+app.use("/", userRessource);
+app.use("/", authRessource);
 
 app.listen(config.http.port, () => {
   console.log(`server started at http://localhost:${config.http.port}`);
