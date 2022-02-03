@@ -22,7 +22,8 @@ const InternalLoginForm = ({ state, error }: InternalLoginFormProps) => {
     switch (state) {
       case State.SUCCESS:
         // TODO set session cookies
-        router.push("/");
+        localStorage.setItem("user");
+        router.push("/profile");
         break;
 
       case State.ERROR:
