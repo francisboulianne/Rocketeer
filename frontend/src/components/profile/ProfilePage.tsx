@@ -20,7 +20,7 @@ export const ProfilePage = () => {
 
       <MenuItem variant="sm">
         <Link href="/" passHref={true}>
-          <button className="text-white w-20 rounded py-2 mt-2 bg-blue-400" onClick={logOut}>
+          <button className="text-white w-20 rounded bg-blue-400" onClick={logOut}>
             Log out
           </button>
         </Link>
