@@ -1,6 +1,6 @@
 import { useAxios } from "./useAxios";
 
-export type User = {
+export type SignUpRequest = {
   username: string;
   email: string;
   firstName: string;
@@ -12,8 +12,8 @@ export type User = {
 export const useSignUp = () => {
   const { data, sendRequest, state, error } = useAxios();
 
-  const signUpUser = (user: User) => {
-    sendRequest({ url: "/signup", method: "POST", data: user });
+  const signUpUser = (signUpRequest: SignUpRequest) => {
+    sendRequest({ url: "/signup", method: "POST", data: signUpRequest });
   };
 
   return { data, state, signUpUser, error };

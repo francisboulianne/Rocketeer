@@ -1,10 +1,11 @@
-import User from "../domain/User";
+import { UserDto } from "../api/dtos/UserDto";
 import UserRepository from "../domain/UserRepository";
+import UserMapper from "./UserMapper";
 
 export default class UserService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userMapper: UserMapper, private userRepository: UserRepository) {}
 
-  public async findByUsername(username: string): Promise<User> {
-    return await this.userRepository.findByUsername(username);
+  public async findByUsername(username: string): Promise<UserDto> {
+    return this.userMapper.toDto(await this.userRepository.findByUsername(username));
   }
 }

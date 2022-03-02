@@ -2,14 +2,14 @@ import { UserDto } from "../api/dtos/UserDto";
 import User from "../domain/User";
 
 export default class UserMapper {
-  toUser(userDto: UserDto): User {
+  public toUser(userDto: UserDto): User {
     return {
-      username: userDto.username,
-      firstName: userDto.firstName,
-      lastName: userDto.lastName,
-      email: userDto.email,
-      phoneNumber: userDto.phoneNumber,
-      password: userDto.password
+      username: userDto?.username,
+      firstName: userDto?.firstName,
+      lastName: userDto?.lastName,
+      email: userDto?.email,
+      phoneNumber: userDto?.phoneNumber,
+      password: userDto?.password
     };
   }
 
@@ -19,8 +19,7 @@ export default class UserMapper {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      phoneNumber: user.phoneNumber,
-      password: user.password
+      phoneNumber: user.phoneNumber
     };
   }
 }

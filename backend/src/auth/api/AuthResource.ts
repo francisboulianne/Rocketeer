@@ -1,12 +1,13 @@
 import express, { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import { authService } from "../../AppContext";
+import { authService, localAuthProvider } from "../../AppContext";
 import { UserDto } from "src/user/api/dtos/UserDto";
-import MongoUserModel from "../../user/infra/models/MongoUserModel";
 import { CredentialsDto } from "./dtos/CredentialsDto";
 import { isUnusedEmail } from "./validators/isUnusedEmail";
 import { isUnusedUsername } from "./validators/isUnusedUsername";
 import { isUsedUsername } from "./validators/isUsedUsername";
+import { isPasswordMatching } from "./validators/isPasswordMatching";
+import { authMiddleware } from "../../middleware/AuthMiddleware";
 
 const router = express.Router();
 
@@ -25,21 +26,18 @@ router.post(
     }
 
     const newUser = await authService.signup(req.body);
-    return res.status(201).setHeader("LOCATION", `/users/${newUser.username}`).json(newUser);
+    return res
+      .status(201)
+      .cookie("access-token", localAuthProvider.login(newUser), { httpOnly: true, sameSite: "strict" })
+      .setHeader("LOCATION", `/users/${newUser.username}`)
+      .json(newUser);
   }
 );
 
 router.post(
   "/login",
   body("username").exists().withMessage("The username field is required").custom(isUsedUsername),
-  body("password").custom(async (value, { req }): Promise<string | void> => {
-    const userWithGivenUsername = await MongoUserModel.findOne({ username: req.body.username });
-    if (!userWithGivenUsername || userWithGivenUsername?.password != value) {
-      return Promise.reject("Password does not match the given username");
-    }
-
-    return Promise.resolve();
-  }),
+  body("password").custom(isPasswordMatching),
   async (req: Request<Record<string, unknown>, Record<string, unknown>, CredentialsDto>, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -47,8 +45,16 @@ router.post(
     }
 
     const user = await authService.login(req.body.username);
-    return res.status(201).setHeader("LOCATION", `/users/${user.username}`).json(user);
+    return res
+      .status(201)
+      .cookie("access-token", localAuthProvider.login(user), { httpOnly: true, sameSite: "strict" })
+      .setHeader("LOCATION", `/users/${user.username}`)
+      .json(user);
   }
 );
+
+router.get("/logout", authMiddleware, async (req: Request<Record<string, unknown>, Record<string, unknown>>, res: Response) => {
+  return res.status(200).cookie("access-token", req.cookies["access-token"], { maxAge: 0 }).send();
+});
 
 module.exports = router;

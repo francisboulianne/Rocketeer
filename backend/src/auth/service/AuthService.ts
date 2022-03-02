@@ -13,6 +13,7 @@ export default class AuthService {
 
   public async login(username: string): Promise<UserDto> {
     const user = await this.userRepository.findByUsername(username);
+
     return this.userMapper.toDto(user);
   }
 }

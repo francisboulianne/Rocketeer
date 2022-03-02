@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import * as Yup from "yup";
 import { State } from "../../hooks/useAxios";
-import { User, useSignUp } from "../../hooks/useSignUp";
+import { useSignUp } from "../../hooks/useSignUp";
 import { SpinnerIcon } from "../icons/SpinnerIcon";
 import { FormikField } from "../shared/FormikField";
 
@@ -13,8 +13,17 @@ interface InternalSignUpFormProps {
   error: AxiosError | undefined;
 }
 
+interface SignUpUser {
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+}
+
 const InternalSignUpForm = ({ state, error }: InternalSignUpFormProps) => {
-  const { errors: formErrors, touched, setErrors: setFormErrors, initialValues } = useFormikContext<User>();
+  const { errors: formErrors, touched, setErrors: setFormErrors, initialValues } = useFormikContext<SignUpUser>();
 
   const router = useRouter();
 
@@ -73,7 +82,7 @@ const InternalSignUpForm = ({ state, error }: InternalSignUpFormProps) => {
 export const SignUpForm = () => {
   const { state, signUpUser, error } = useSignUp();
 
-  const initialValues: User = {
+  const initialValues: SignUpUser = {
     username: "",
     firstName: "",
     lastName: "",
@@ -91,7 +100,7 @@ export const SignUpForm = () => {
     password: Yup.string().required(" ")
   });
 
-  const onSubmit = (values: User) => {
+  const onSubmit = (values: SignUpUser) => {
     signUpUser(values);
   };
 

@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { User } from "../../hooks/useSignUp";
+import User from "../../user/domain/User";
 
-export const ProfileInformation = () => {
-  const [user, setUser] = useState({} as User);
+interface Props {
+  user: User;
+}
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-  }, []);
-
+export const ProfileInformation = ({ user }: Props) => {
   return (
     <div>
       <b>Welcome to Rocketeer</b>
