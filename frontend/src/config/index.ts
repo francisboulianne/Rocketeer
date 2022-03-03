@@ -16,12 +16,15 @@ export const getConfigForEnvironment = () => {
 
   switch (environment) {
     case "local":
+      console.log("LOOOOOOCCCAAAAAALLLLLL");
       return localConfig;
 
     case "docker":
+      console.log("DOOOOCOCCCCKKKKKERRRRRR");
       return dockerConfig;
 
     case "production":
+      console.log("AKNBDJFAKJNFKJAEJKFAJSE.FKJ.AKJBE.FKJSBKJBSEKJFKJSEF");
       return productionConfig;
 
     default:
