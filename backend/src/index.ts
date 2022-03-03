@@ -25,5 +25,5 @@ app.use("/", userResource);
 app.use("/", authResource);
 
 app.listen(config.http.port, () => {
-  console.log(`server started at http://localhost:${config.http.port}`);
+  console.log(`server started on port: ${config.http.port}`);
 });

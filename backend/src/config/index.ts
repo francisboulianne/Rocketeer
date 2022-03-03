@@ -4,7 +4,7 @@ import { productionConfig } from "./config.production";
 
 export interface Config {
   http: {
-    port: number;
+    port: number | string | undefined;
   };
 
   mongo: {
